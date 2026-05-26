@@ -2,7 +2,7 @@ CREATE SCHEMA todoapp;
 
 CREATE TABLE todoapp.users
 (
-    id           uuid PRIMARY KEY,
+    id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     first_name   VARCHAR(50) NOT NULL CHECK (char_length(first_name) BETWEEN 3 AND 50),
     last_name    VARCHAR(50) NOT NULL CHECK (char_length(last_name) BETWEEN 3 AND 50),
     phone_number VARCHAR(15) NOT NULL CHECK (

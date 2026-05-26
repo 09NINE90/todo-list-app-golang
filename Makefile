@@ -23,5 +23,9 @@ migrate-down:
 migrate-action:
 	docker compose run --rm todo-app-db-migrate \
 		-path /migrations \
-		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@razum0ff.ru:6432/${POSTGRES_DB_NAME}?sslmode=disable \
+		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@razum0ff.ru:6432/${POSTGRES_DB}?sslmode=disable \
 		"$(action)"
+
+start-application:
+	go mod tidy && \
+	go run cmd/app/main.go
