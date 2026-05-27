@@ -7,21 +7,10 @@ import (
 	corelogger "github.com/09NINE90/todo-list-app-golang/internal/core/logger"
 	corehttprequest "github.com/09NINE90/todo-list-app-golang/internal/core/transport/http/request"
 	corehttpresponse "github.com/09NINE90/todo-list-app-golang/internal/core/transport/http/response"
-	"github.com/google/uuid"
 )
 
-type CreateUserRq struct {
-	FirstName   string `json:"fullName" validate:"required,min=3,max=50"`
-	LastName    string `json:"lastName" validate:"required,min=3,max=50"`
-	PhoneNumber string `json:"phoneNumber" validate:"required,min=11,max=15,startswith=+"`
-}
-
-type CreateUserRs struct {
-	ID          uuid.UUID `json:"id"`
-	FirstName   string    `json:"fullName"`
-	LastName    string    `json:"lastName"`
-	PhoneNumber string    `json:"phoneNumber"`
-}
+type CreateUserRq UserDTORq
+type CreateUserRs UserDTORs
 
 func (h *UsersHttpHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -42,9 +31,10 @@ func (h *UsersHttpHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	userDomain, err := h.usersService.CreateUser(ctx, userDomain)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to create user")
+		return
 	}
 
-	response := dtoFromDomain(userDomain)
+	response := CreateUserRs(userDTOFromDomain(userDomain))
 
 	responseHandler.JsonResponse(response, http.StatusCreated)
 }
@@ -55,13 +45,4 @@ func domainFromDTO(dto CreateUserRq) domain.User {
 		dto.LastName,
 		dto.PhoneNumber,
 	)
-}
-
-func dtoFromDomain(user domain.User) CreateUserRs {
-	return CreateUserRs{
-		ID:          user.ID,
-		FirstName:   user.FirstName,
-		LastName:    user.LastName,
-		PhoneNumber: user.PhoneNumber,
-	}
 }

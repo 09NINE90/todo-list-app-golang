@@ -6,11 +6,7 @@ import (
 	"github.com/09NINE90/todo-list-app-golang/internal/core/domain"
 )
 
-type UsersService struct {
-	usersRepository UsersRepository
-}
-
-type UsersRepository interface {
+type IUsersService interface {
 	CreateUser(
 		ctx context.Context,
 		user domain.User,
@@ -21,12 +17,4 @@ type UsersRepository interface {
 		limit *int,
 		offset *int,
 	) ([]domain.User, error)
-}
-
-func NewUsersService(
-	usersRepository UsersRepository,
-) *UsersService {
-	return &UsersService{
-		usersRepository: usersRepository,
-	}
 }
